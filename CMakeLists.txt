@@ -46,8 +46,28 @@ set(EXAMPLE_FILES
         ${example_dir}/Main.cpp
         )
 
-add_executable(BurstLinker ${SOURCE_FILES} ${BURSTLINKER_FILES})
-add_executable(Example ${SOURCE_FILES} ${EXAMPLE_FILES})
+
+
+#添加宏
+ADD_DEFINITIONS(
+    -DGIF_EXPORTS
+)
+ADD_LIBRARY(GifEncode SHARED ${SOURCE_FILES})
+
+#程序
+add_executable(BurstLinker ${BURSTLINKER_FILES})
+#添加依赖项
+TARGET_LINK_LIBRARIES(BurstLinker
+    GifEncode
+)
+
+#示例
+add_executable(Example ${EXAMPLE_FILES})
+
+#添加依赖项
+TARGET_LINK_LIBRARIES(Example
+    GifEncode
+)
 
 message(STATUS "CMAKE_SYSTEM_INFO_FILE:   ${CMAKE_SYSTEM_INFO_FILE}")
 message(STATUS "CMAKE_SYSTEM_NAME:        ${CMAKE_SYSTEM_NAME}")
@@ -63,6 +83,7 @@ IF (CMAKE_SYSTEM MATCHES "Linux")
     find_package(Threads)
     target_link_libraries(BurstLinker ${CMAKE_THREAD_LIBS_INIT})
     target_link_libraries(Example ${CMAKE_THREAD_LIBS_INIT})
+    target_link_libraries(GifEncode ${CMAKE_THREAD_LIBS_INIT})
 ELSEIF (CMAKE_SYSTEM MATCHES "Darwin")
 
 ELSEIF (CMAKE_SYSTEM MATCHES "Windows")

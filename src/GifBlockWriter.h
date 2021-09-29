@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by succlz123 on 17-9-6.
 //
 
@@ -16,15 +16,15 @@ namespace blk {
 
     public:
 
-        static void writeHeaderBlock(std::ofstream &file);
+        static void writeHeaderBlock(std::ostream &file);
 
-        static void writeLogicalScreenDescriptorBlock(std::ofstream &file, int32_t logicalScreenWidth,
+        static void writeLogicalScreenDescriptorBlock(std::ostream &file, int32_t logicalScreenWidth,
                                                       int32_t logicalScreenHeight,
                                                       bool globalColorTable, int32_t colorResolution, bool sort,
                                                       int32_t globalColorTableSize,
                                                       int32_t backgroundColorIndex, int32_t pixelAspectRatio);
 
-        static void writeNetscapeLoopingExtensionBlock(std::ofstream &file, uint32_t loopCount);
+        static void writeNetscapeLoopingExtensionBlock(std::ostream &file, uint32_t loopCount);
 
         static void writeGraphicsControlExtensionBlock(std::vector<uint8_t> &content, int32_t disposalMethod,
                                                        bool userInput, bool transparentColor, int32_t delayCentiseconds,
@@ -45,9 +45,9 @@ namespace blk {
 
         static void writeColorTableUnpadded(std::vector<uint8_t> &content, int unpaddedSize, int paddedSize);
 
-        static void writeImageDataBlock(std::ofstream &file, uint8_t colorDepth, std::list<uint8_t *> lzw, int lzwSize);
+        static void writeImageDataBlock(std::ostream &file, uint8_t colorDepth, std::list<uint8_t *> lzw, int lzwSize);
 
-        static void writeTerminator(std::ofstream &file);
+        static void writeTerminator(std::ostream &file);
 
     };
 

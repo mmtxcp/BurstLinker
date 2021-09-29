@@ -1,10 +1,10 @@
-//
+﻿//
 // Created by succlz123 on 17-8-7.
 //
 
 #include <iostream>
 #include "../src/BurstLinker.h"
-
+#include <ostream>
 #define STB_IMAGE_IMPLEMENTATION
 
 #include "../third_part/stb_image.h"
@@ -87,6 +87,7 @@ addImage(int r, int g, int b, uint32_t width, uint32_t height, uint32_t delay, B
 }
 
 int main(int argc, char *argv[]) {
+
     const char *fileName = "../screenshot/lenna-original.png";
     int width, height, n;
     unsigned char *data = stbi_load(fileName, &width, &height, &n, 0);
@@ -100,9 +101,13 @@ int main(int argc, char *argv[]) {
         stbi_image_free(data);
         return 0;
     }
-
+	std::ofstream outfile;
+	outfile.open("out.gif", std::ios::out | std::ios::binary);
+	if (!outfile.is_open()) {
+		return false;
+	}
     BurstLinker burstLinker;
-    if (!burstLinker.init("out.gif", width, height, 0, 4)) {
+    if (!burstLinker.init(width, height, 0, 4)) {
         std::cout << "GifEncoder init fail" << std::endl;
         stbi_image_free(data);
         return 0;
@@ -110,7 +115,7 @@ int main(int argc, char *argv[]) {
 
     uint32_t delay = 1000;
     long long currentTime = currentTimeMs();
-    bool colorTest = false;
+    bool colorTest = 1;
 
     addImage(fileName, width, height, delay, burstLinker, QuantizerType::Uniform, DitherType::No);
     if (colorTest) {
@@ -158,8 +163,10 @@ int main(int argc, char *argv[]) {
     }
     diff = currentTimeMs() - currentTime;
     std::cout << "NeuQuant -10 " << diff << "ms" << std::endl;
-
-    burstLinker.release();
+	//获取内存数据流，这个流可以直接返回，只是以字符串形式存储
+	std::string imgBuff =burstLinker.release();
+    outfile.write(imgBuff.c_str(), imgBuff.size());
+	outfile.close();
     stbi_image_free(data);
 //    burstLinker.analyzerGifInfo("out.gif");
     return 0;

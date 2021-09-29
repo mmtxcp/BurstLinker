@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by succlz123 on 17-9-30.
 //
 
@@ -8,7 +8,7 @@
 #include <cstdint>
 #include <string>
 #include <sstream>
-
+#include <chrono>
 namespace blk {
 
     class Logger {

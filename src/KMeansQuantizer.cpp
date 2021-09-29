@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by succlz123 on 17-10-9.
 //
 
@@ -18,13 +18,13 @@ int32_t KMeansQuantizer::quantize(const std::vector<ARGB> &in, uint32_t maxColor
     }
     // random initial center
     std::mt19937 generator((uint32_t) time(nullptr));
-    std::uniform_int_distribution<uint32_t> dis(0, pixelCount);
+    std::uniform_int_distribution<uint32_t> dis(0, pixelCount-1);
     std::set<ARGB> centroidsToRecompute;
     uint32_t randomCount = 0;
     while (centroidsToRecompute.size() < maxColorCount) {
         uint32_t random = dis(generator);
         centroidsToRecompute.insert(in[random]);
-        if (randomCount++ > pixelCount) {
+        if (randomCount++ >= pixelCount) {
             break;
         }
     }
@@ -34,11 +34,18 @@ int32_t KMeansQuantizer::quantize(const std::vector<ARGB> &in, uint32_t maxColor
     if (centroidSize < maxColorCount) {
         resultSize = centroidSize;
         for (ARGB color : centroidsToRecompute) {
-            out[colorPaletteIndex].r = color.r;
-            out[colorPaletteIndex].g = color.g;
-            out[colorPaletteIndex].b = color.b;
-            out[colorPaletteIndex].index = static_cast<uint8_t>(colorPaletteIndex);
+			//外部调用的是reserve  reserve是容器预留空间，但在空间内不真正创建元素对象，
+			//所以在没有添加新的对象之前，不能引用容器内的元素。加入新的元素时，要调用push_back()/insert()函数。
+			//resize是改变容器的大小，且在创建对象，因此，调用这个函数之后，就可以引用容器内的对象了，
+			//因此当加入新的元素时，用operator[]操作符，或者用迭代器来引用元素对象。此时再调用push_back()函数，是加在这个新的空间后面的。
+			/* out[colorPaletteIndex].r = color.r;
+			 out[colorPaletteIndex].g = color.g;
+			 out[colorPaletteIndex].b = color.b;
+			 out[colorPaletteIndex].index = static_cast<uint8_t>(colorPaletteIndex);*/
+			out.emplace_back(color.r, color.g, color.b, colorPaletteIndex);
+
             colorPaletteIndex++;
+
         }
         return centroidSize;
     }

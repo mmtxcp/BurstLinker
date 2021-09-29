@@ -1,12 +1,15 @@
-//
+﻿//
 // Created by succlz123 on 17-9-5.
 //
 
 #include <cstdint>
+#include <string>
 #include <fstream>
+#include <sstream>
+#include <algorithm>
 #include <vector>
 #include "ThreadPool.h"
-
+#include "global.h"
 #ifndef BURSTLINKER_GIFENCODER_H
 #define BURSTLINKER_GIFENCODER_H
 
@@ -76,7 +79,7 @@ namespace blk {
         FloydSteinberg = 3
     };
 
-    class GifEncoder {
+    class GIF_EXPORT GifEncoder {
 
     public:
 
@@ -89,24 +92,27 @@ namespace blk {
         const char *rsCacheDir = nullptr;
 
         std::unique_ptr<ThreadPool> threadPool = nullptr;
+		GifEncoder(std::ostream& ostream);
 
         ~GifEncoder();
 
-        bool init(const char *path, uint16_t width, uint16_t height, uint32_t loopCount, uint32_t threadCount);
+        //bool init(const char *path, uint16_t width, uint16_t height, uint32_t loopCount, uint32_t threadCount);
 
+		bool init(/*std::ostream& ostream,*/ uint16_t width, uint16_t height, uint32_t loopCount, uint32_t threadCount);
         std::vector<uint8_t> addImage(const std::vector<uint32_t> &original, uint32_t delay,
                                       QuantizerType qType, DitherType dType,
                                       int32_t transparencyOption, uint16_t left, uint16_t top,
                                       std::vector<uint8_t> &content);
 
-        void flush(const std::vector<uint8_t> &content);
+        void flush(/*std::ostream& stream,*/ const std::vector<uint8_t> &content);
 
-        void finishEncoding();
+        void finishEncoding(/*std::ostream& stream*/);
 
     private:
 
-        std::ofstream outfile;
-
+        //std::ofstream outfile;
+		//std::ostringstream ss;
+		std::ostream& stream;
     };
 
 }
